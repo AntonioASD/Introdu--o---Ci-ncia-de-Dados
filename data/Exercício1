@@ -1,0 +1,27 @@
+# gerador de números aleatórios
+import random
+random.seed(1) # inicia a semente do gerador de números aleatórios. Importante para reprodução dos resultados
+# Pandas is used for data manipulation
+import pandas as pd # bibliote Pandas é usada para manipulação de dados
+import matplotlib.pyplot as plt # biblioteca para visualização dos dados
+
+# CSV file
+data = pd.read_csv('iris-with-errors.csv', header=(0))
+
+import numpy as np
+data = data.replace('?', np.nan)
+data.head(25)
+
+# remove as linhas com NaN
+data = data.dropna() 
+data.head(25)
+
+# Remove as linhas duplicadas
+data = data.drop_duplicates()
+data.head(25)
+
+data = data.drop(data.columns[[3, 4]], axis=1)
+data.head(25)
+
+print("Número de linhas e colunas:",data.shape)
+data.head(25)
