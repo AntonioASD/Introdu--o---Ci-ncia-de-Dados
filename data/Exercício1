@@ -1,42 +1,17 @@
-import numpy as np
+import random
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.neighbors import KernelDensity
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score
-from sklearn.model_selection import GridSearchCV
+random.seed(42) # define the seed (important to reproduce the results)
+import pandas as pd
 
-# Carregando os dados
-data = pd.read_csv('data/winequality-red.csv', header=(0))
-
-# Separando atributos e classes da tabela e convertendo para numpy arrays
-y = data.iloc[:,-1]
-classes = np.array(pd.unique(y))
-data = data.to_numpy()
-nrow,ncol = data.shape
-X = data[:,0:ncol-1]
-
-p = 0.7 # fracao de elementos no conjunto de treinamento
-X_train, X_test, y_train, y_test = train_test_split(X, y, train_size = p, random_state = 42)
-
-# Usando KDE para estimar as densidades (importado do sklearn)
-h = 0.052 # parametro de largura de banda
-kdes = {}
-for c in classes:
-    X_c = X_train[y_train == c]
-    kde = KernelDensity(kernel='gaussian', bandwidth=h).fit(X_c)
-    kdes[c] = kde
-
-# Prevendo usendo o teorema de Bayes 
-y_pred_kde = []
-for x in X_test:
-    probs = []
-    for c in classes:
-        # Implementação em código de P(x|c) * P(c)
-        log_likelihood = kdes[c].score_samples(x.reshape(1, -1))
-        prior = np.sum(y_train == c) / len(y_train)
-        probs.append(np.exp(log_likelihood) * prior)
-    y_pred_kde.append(classes[np.argmax(probs)])
-
-score_kde = accuracy_score(y_pred_kde, y_test)
-print('Non-parametyric Bayes Accuracy:', score_kde)
+# URL do CSV "raw" no GitHub
+url = (
+"https://raw.githubusercontent.com/rocksaint/fruit-data-with-colours/"
+"master/fruit_data_with_colours.csv"
+)
+data = pd.read_csv(url)
+nrow, ncol = data.shape
+print("Matriz de atributos: Número de linhas:", nrow, " colunas: ", ncol)
+attributes = list(data.columns)
+data.head(10)
